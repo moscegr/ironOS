@@ -71,25 +71,25 @@ Este proyecto está desarrollado bajo **PlatformIO**. Para desplegarlo:
    ```ini
    
    [env:esp32-s3-ironos]
-platform = espressif32@5.3.0
-board = esp32-s3-devkitc-1
-framework = arduino
-monitor_speed = 115200
-monitor_filters = esp32_exception_decoder
-
-; --- CONFIGURACIÓN N16R8: 16MB Flash QIO + 8MB PSRAM OPI ---
-board_build.arduino.memory_type = qio_opi
-board_build.flash_mode = qio
-board_build.flash_size = 16MB
-board_build.partitions = default_16MB.csv
-board_upload.flash_size = 16MB
-board_upload.maximum_size = 16777216
-
-lib_deps = 
-    moononournation/GFX Library for Arduino @ 1.4.7
-
-build_flags = 
-    -DBOARD_HAS_PSRAM
-    -DARDUINO_USB_MODE=1
-    -DARDUINO_USB_CDC_ON_BOOT=1
-    -DCORE_DEBUG_LEVEL=0
+   platform = espressif32@5.3.0
+   board = esp32-s3-devkitc-1
+   framework = arduino
+   monitor_speed = 115200
+   monitor_filters = esp32_exception_decoder
+   
+   ; --- CONFIGURACIÓN N16R8: 16MB Flash QIO + 8MB PSRAM OPI ---
+   board_build.arduino.memory_type = qio_opi
+   board_build.flash_mode = qio
+   board_build.flash_size = 16MB
+   board_build.partitions = default_16MB.csv
+   board_upload.flash_size = 16MB
+   board_upload.maximum_size = 16777216
+   
+   lib_deps = 
+       moononournation/GFX Library for Arduino @ 1.4.7
+   
+   build_flags = 
+       -DBOARD_HAS_PSRAM
+       -DARDUINO_USB_MODE=1
+       -DARDUINO_USB_CDC_ON_BOOT=1
+       -DCORE_DEBUG_LEVEL=0
