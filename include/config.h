@@ -14,12 +14,11 @@
 #define JOY_Y  3
 #define JOY_SW 8
 
-// --- PINES DE TARJETA SD (Módulo Externo SPI Seguro) ---
-// Conecta tu módulo externo a estos pines para evitar el conflicto con la RAM
-#define SD_SCK  12
-#define SD_MISO 13
-#define SD_MOSI 11
-#define SD_CS   10
+// --- PINES DE TARJETA SD (Módulo Integrado ESP32-S3) ---
+// Configuración nativa 1-Bit que evita el conflicto con la PSRAM
+#define SD_MMC_CMD 38
+#define SD_MMC_CLK 39
+#define SD_MMC_D0  40
 
 #define TIEMPO_DOBLE_CLICK 350 
 

@@ -4,8 +4,7 @@
 #include "Emojis.h"
 #include "ui/Launcher.h"
 #include "config.h" 
-#include <SPI.h>
-#include <SD.h>
+#include <SD_MMC.h>
 
 #define LED_PIN 48
 
@@ -23,12 +22,10 @@ private:
     // Variables para la animación Neón táctica
     int anguloNeon = 0;
     unsigned long ultimoFrameNeon = 0;
-    
-    SPIClass* spiSD = nullptr;
 
     void cargarArchivos() {
         numArchivos = 0;
-        File root = SD.open("/");
+        File root = SD_MMC.open("/");
         if (!root) return;
         
         File file = root.openNextFile();
@@ -44,10 +41,7 @@ public:
     const char* obtenerNombre() override { return "ARCHIVOS SD"; }
     const uint8_t* obtenerEmoji() override { return emoji_sd; }
     
-    void setup() override {
-        // Asignamos memoria dinámica para el bus SPI secundario
-        spiSD = new SPIClass(FSPI);
-    }
+    void setup() override {}
 
     void alEntrar() override {
         pantallaActualizada = false;
@@ -59,15 +53,11 @@ public:
         anguloNeon = 0;
         ultimoFrameNeon = millis();
 
-        // 1. Pre-estabilizar el pin CS para evitar el error 0x107 de Reddit
-        pinMode(SD_CS, OUTPUT);
-        digitalWrite(SD_CS, HIGH);
-
-        // 2. Inicializar bus SPI pasando -1 en el pin CS para delegar control a SD.h
-        spiSD->begin(SD_SCK, SD_MISO, SD_MOSI, -1);
+        // 1. Asignar los pines correctos del lector trasero (Modo 1-Bit nativo)
+        SD_MMC.setPins(SD_MMC_CLK, SD_MMC_CMD, SD_MMC_D0);
         
-        // 3. Levantar la tarjeta a 4MHz (Velocidad segura antibrownout)
-        sdOk = SD.begin(SD_CS, *spiSD, 4000000);
+        // 2. Levantar la tarjeta evitando el conflicto con la PSRAM Octal
+        sdOk = SD_MMC.begin("/sdcard", true);
         
         if (sdOk) {
             cargarArchivos();
@@ -78,7 +68,7 @@ public:
     }
     
     void alSalir() override {
-        SD.end(); 
+        if (sdOk) SD_MMC.end(); 
         neopixelWrite(LED_PIN, 0, 0, 0); 
     }
 
@@ -127,8 +117,8 @@ public:
                 canvas->drawArc(120, 120, 116, 114, (anguloNeon + 40) % 360, (anguloNeon + 45) % 360, WHITE);
                 
                 Launcher::dibujarTextoCentrado(canvas, "ERROR DE LECTURA", 85, 1, IRON_RED);
-                Launcher::dibujarTextoCentrado(canvas, "Voltaje Inestable", 115, 1, WHITE);
-                Launcher::dibujarTextoCentrado(canvas, "Usa modulo externo SPI", 140, 1, IRON_BLUE);
+                Launcher::dibujarTextoCentrado(canvas, "Modulo Interno Fallo", 115, 1, WHITE);
+                Launcher::dibujarTextoCentrado(canvas, "Verifica la MicroSD", 140, 1, IRON_BLUE);
             } else {
                 // Interfaz de Éxito (Animación en VERDE TÁCTICO)
                 canvas->drawCircle(120, 120, 118, IRON_GREEN);
