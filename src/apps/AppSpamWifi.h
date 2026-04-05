@@ -159,7 +159,7 @@ public:
             canvas->drawArc(120, 120, 117, 113, (anguloNeon + 20) % 360, (anguloNeon + 50) % 360, IRON_RED); 
             canvas->drawArc(120, 120, 116, 114, (anguloNeon + 40) % 360, (anguloNeon + 45) % 360, WHITE); 
             
-            Launcher::dibujarTextoCentrado(canvas, "INYECCION RF ACTIVA", 40, 1, IRON_RED);
+            Launcher::dibujarTextoCentrado(canvas, "INYECCION WIFI ACTIVA", 40, 1, IRON_RED);
             canvas->drawLine(20, 50, 220, 50, IRON_DARK);
             
             char txtCount[32];
@@ -167,7 +167,7 @@ public:
             Launcher::dibujarTextoCentrado(canvas, txtCount, 75, 1, WHITE);
             
             // Mostramos una pequeña muestra de lo que se está inyectando (3 redes)
-            for(int i = 0; i < 3; i++) {
+            for(int i = 0; i < 5; i++) {
                 canvas->setCursor(40, 105 + (i * 15));
                 canvas->setTextSize(1);
                 canvas->setTextColor(IRON_CYAN);
@@ -175,13 +175,12 @@ public:
                 canvas->print(redesFalsas[i]);
             }
 
-            Launcher::dibujarTextoCentrado(canvas, "...y 17 mas", 160, 1, IRON_DARK);
+            Launcher::dibujarTextoCentrado(canvas, "...y 15 mas", 160, 1, IRON_DARK);
 
             // Instrucción de Salida
-            canvas->drawBitmap(120 - 45, 195, emoji_back, 32, 32, IRON_CYAN);
-            canvas->setCursor(120 - 25, 195);
+            canvas->drawBitmap(120 - 45, 200, emoji_back, 32, 32, IRON_CYAN);
+            canvas->setCursor(120 - 25, 212);
             canvas->setTextColor(IRON_RED);
-            canvas->setTextSize(1);
             canvas->print("DOBLE CLICK");
 
             canvas->flush();

@@ -39,7 +39,7 @@ AppSpamWifi   spamAppWifi;
 AppEvilTwin   evilTwinApp; 
 
 // Catálogo maestro
-App* catalogoApps[] = {&spamAppBLE, &spamAppWifi, &evilPortalApp, &marauderApp, &wifiApp, &bleApp, &sdApp, &settingsApp, &statsApp, &snakeApp, &infoApp, &evilTwinApp }; 
+App* catalogoApps[] = {&snakeApp, &bleApp, &spamAppWifi, &spamAppBLE, &evilPortalApp, &marauderApp, &wifiApp, &sdApp, &settingsApp, &statsApp, &infoApp, &evilTwinApp }; 
 int totalApps = 12;
 int indiceActual = 0;
 App* appActiva = nullptr;

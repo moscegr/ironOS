@@ -79,5 +79,7 @@ void Launcher::dibujar(Arduino_Canvas* canvas, App** apps, int total, int selecc
 
     // --- HUD INFERIOR: SALIDA SENCILLA ---
     // Flecha sencilla <- solicitada por el Ingeniero
-    dibujarTextoCentrado(canvas, "<- SALIR (DOBLE CLIC)", 210, 1, IRON_RED);
+    dibujarTextoCentrado(canvas, "MENU PRINCIPAL", 205, 1, IRON_RED);
+    dibujarTextoCentrado(canvas, "(ironOS)", 215, 1, IRON_RED);
+    
 }

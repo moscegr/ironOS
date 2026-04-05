@@ -49,7 +49,7 @@ private:
     }
 
 public:
-    const char* obtenerNombre() override { return "BLE SCAN"; }
+    const char* obtenerNombre() override { return "BLUE ESCANER"; }
     const uint8_t* obtenerEmoji() override { return emoji_ble; }
     
     void setup() override {
@@ -136,7 +136,7 @@ public:
                 canvas->drawArc(120, 120, 117, 113, (anguloNeon + 20) % 360, (anguloNeon + 50) % 360, IRON_CYAN); 
                 canvas->drawArc(120, 120, 116, 114, (anguloNeon + 40) % 360, (anguloNeon + 45) % 360, WHITE); 
 
-                Launcher::dibujarTextoCentrado(canvas, "ESCANEO BLE...", 100, 2, IRON_CYAN);
+                Launcher::dibujarTextoCentrado(canvas, "ESCANEO DE BLUES...", 100, 2, IRON_CYAN);
                 
                 char tiempoStr[32];
                 sprintf(tiempoStr, "Termina en: %d s", segundosRestantes);
@@ -243,7 +243,7 @@ public:
                 }
                 
                 canvas->drawBitmap(120 - 45, 200, emoji_back, 32, 32, IRON_CYAN);
-                canvas->setCursor(120 - 25, 200);
+                canvas->setCursor(120 - 25, 212);
                 canvas->setTextColor(IRON_RED);
                 canvas->print("DOBLE CLICK");
                 
@@ -299,7 +299,7 @@ public:
                 Launcher::dibujarTextoCentrado(canvas, "< Volver = Clic/Izq", 175, 1, IRON_DARK);
 
                 canvas->drawBitmap(120 - 45, 200, emoji_back, 32, 32, IRON_CYAN);
-                canvas->setCursor(120 - 25, 200);
+                canvas->setCursor(120 - 25, 212);
                 canvas->setTextColor(IRON_RED);
                 canvas->print("DOBLE CLICK");
 
