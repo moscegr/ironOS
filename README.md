@@ -132,3 +132,38 @@ En su versión 2.0, IronOS abandona la interfaz básica para convertirse en un *
 
 ---
 *Desarrollado con precisión matemática y potencia de procesamiento puro.*
+
+## ⚡ Actualización v2.5 (Tactical Stability & Marauder Expansion)
+
+Esta actualización masiva se enfoca en la estabilidad del núcleo, la evasión de protecciones de hardware del ESP32-S3 y la expansión de los vectores de ataque, convirtiendo a IronOS en una herramienta de auditoría sin cuelgues (Crash-Free).
+
+### 🛡️ Evil Twin Engine (Anti-Crash)
+* **Buffer Asíncrono de Captura:** Se eliminó el "Watchdog Reset" (WDT) al guardar credenciales. Los datos ahora se almacenan en RAM y se escriben en la tarjeta SD durante los ciclos libres del reloj, evitando el pánico del procesador.
+* **Redirección 302 Pura (Catch-All):** Prevención de inundación de lectura SD. Todas las peticiones en segundo plano de los teléfonos (Android/iOS) son redirigidas instantáneamente a la raíz.
+* **SSID Cebo Fijo:** La red falsa ahora mantiene un SSID constante (`CFE_ABIERTA`) independientemente de la plantilla HTML cargada dinámicamente desde la carpeta `/portals`.
+* **Formato CSV Táctico:** Las capturas en `passwords.txt` ahora se guardan en formato limpio: `NombrePortal, User, Password`.
+
+### 📡 WiFi Marauder (Beacon Spam & Brownout Bypass)
+* **Evasión de Firewall (Frame 0xC0/0x80):** Se implementó el modo híbrido `WIFI_AP_STA` combinado con modo promiscuo para evadir la restricción del firmware de Espressif que bloqueaba la inyección de paquetes en crudo.
+* **Bypass de Caída de Voltaje (BROWNOUT_RST):** Modificación de registros de bajo nivel (`RTC_CNTL_BROWN_OUT_REG`) para desactivar el detector de caídas de voltaje por hardware durante las ráfagas de inyección a 15ms.
+* **Nuevos Ataques de Inundación (Beacon Flood):**
+  * *SPAM (RANDOM):* Inyección masiva de redes Wi-Fi con nombres alfanuméricos generados proceduralmente.
+  * *SPAM (RICKROLL):* Inyección de 8 redes Wi-Fi secuenciales formando la letra de "Never Gonna Give You Up".
+
+### 🦷 BLE Marauder (Estabilización Bluedroid)
+* **Fix Memory Leak & Crash:** Se corrigió el error `BT_LOG: Bluedroid already disabled`. El stack Bluetooth ahora se inicializa de forma única y segura, alternando entre modos de escaneo (`BLEScan`) e inyección (`BLEAdvertising`) mediante banderas de estado lógicas.
+* **Target Flood (DOS Dirigido):** Capacidad de seleccionar un dispositivo específico del radar y saturar su canal de conexión.
+* **Nuevos Payloads de Spam Broadcast:**
+  * *Sour Apple:* Emulación rotativa de AirPods, AppleTV y Beats para iOS.
+  * *Swift Pair:* Spam de solicitudes de emparejamiento para Windows.
+  * *Fast Pair:* Spam de solicitudes de emparejamiento para dispositivos Android.
+
+### 📂 Explorador SD Táctico (AppSD)
+* La aplicación de tarjeta SD fue reescrita para ser un **Sistema de Archivos Completo**.
+* **Navegación de Directorios:** Capacidad de entrar a subcarpetas (marcadas como `[DIR]`) y retroceder (`..`).
+* **Lector de Logs Integrado:** Permite abrir y leer archivos de texto (`.txt`, `.csv`) directamente en la pantalla del reloj con scroll dinámico (Ideal para leer `passwords.txt` en campo).
+* **Gestión de Archivos:** Menú de opciones para eliminar archivos y directorios vacíos de forma permanente.
+
+### 🎨 Interfaz de Usuario (UI/UX)
+* **Identidad Visual "Red Táctico":** Todas las listas de selección en todas las aplicaciones ahora utilizan un esquema de color de alto contraste en Rojo Puro (`IRON_RED`) y Blanco.
+* **Salida Unificada:** Se integró el ícono de retroceso gráfico (`emoji_back`) junto con la instrucción de hardware `<- SALIR (DOBLE CLIC)` en la base de todos los menús raíz.

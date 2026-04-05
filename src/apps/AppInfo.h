@@ -18,11 +18,11 @@ private:
     // --- DATOS DEL PROYECTO ---
     const int NUM_LINEAS = 8;
     String lineasInfo[8] = {
-        "OS: IronOS v1.0",
-        "DEV: Ing. CEGR",
+        "OS: IronOS v2.5",
+        "DEV: MOS",
         "TIPO: Ciberdefensa",
-        "ENTORNO: Hacker",
-        "MCU: ESP32-S3 WROOM",
+        "ENTORNO: cybermos",
+        "MCU: ESP32-S3-USBOTG",
         "MEM: 16MB FL / 8MB OPI",
         "DISP: 1.28\" TFT GC9A01",
         "UI: Motor Unificado"
@@ -77,7 +77,7 @@ public:
             canvas->drawArc(120, 120, 117, 113, (anguloNeon + 20) % 360, (anguloNeon + 50) % 360, IRON_CYAN); 
             canvas->drawArc(120, 120, 116, 114, (anguloNeon + 40) % 360, (anguloNeon + 45) % 360, WHITE); 
 
-            Launcher::dibujarTextoCentrado(canvas, "SISTEMA IRON OS", 35, 1, IRON_CYAN);
+            Launcher::dibujarTextoCentrado(canvas, "SISTEMA ironOS", 35, 1, IRON_CYAN);
             canvas->drawLine(30, 45, 210, 45, IRON_DARK);
 
             // --- RENDERIZADO DE LA LISTA DINÁMICA ---
