@@ -93,3 +93,42 @@ Este proyecto está desarrollado bajo **PlatformIO**. Para desplegarlo:
        -DARDUINO_USB_MODE=1
        -DARDUINO_USB_CDC_ON_BOOT=1
        -DCORE_DEBUG_LEVEL=0
+
+
+# ⚡ IronOS v2.0 - Cyberpunk Edition & Tactical Suite
+
+IronOS es un sistema operativo diseñado para el microcontrolador **ESP32-S3 (N16R8)** con pantalla circular **GC9A01** y control por **Joystick de un botón**. 
+
+En su versión 2.0, IronOS abandona la interfaz básica para convertirse en un **Smartwatch de Auditoría Táctica (Pentesting)**, integrando el núcleo del legendario proyecto *ESP32 Marauder* bajo una interfaz gráfica agresiva, fluida y altamente optimizada.
+
+## 🚀 Novedades en v2.0 (La Maniobra Épica)
+
+### 🎨 Interfaz Cyberpunk "HUD Táctico"
+* **Motor de Renderizado Asíncrono:** Animaciones a 30 FPS no bloqueantes.
+* **Doble Anillo Giratorio:** Anillos perimetrales en Magenta y Cyan eléctrico girando a distintas velocidades para un look de radar continuo.
+* **Navegación Horizontal:** Control adaptado al eje X (Izquierda/Derecha) con interpolación de lectura.
+* **Iconos Colosales (64x64):** Motor de escalado por hardware integrado (`Pixel Multiplier`) que renderiza Pixel-Art táctico de 32x32 ampliado x2 en tiempo real sin consumir memoria extra.
+* **The Flash Bootlogo:** Renderizado procedural y geométrico del emblema del velocista escarlata al iniciar el sistema.
+* **Salida Táctica:** Navegación unificada con el ícono de retroceso `<- SALIR (DOBLE CLIC)`.
+
+### 🛡️ Arsenal de Auditoría Integrado (Marauder Core)
+* **Marauder WiFi:** * Escáner de APs y Estaciones.
+  * *Sniffer Promiscuo en crudo:* Interceptación de tráfico 802.11 y guardado de archivos `.pcap` directos a la SD para análisis en Wireshark.
+  * Ataques DOS: Inyección de paquetes *Deauth*.
+* **Marauder BLE (Bluetooth):**
+  * Radar BLE en tiempo real.
+  * *Sour Apple Attack:* Spam de solicitudes de emparejamiento para saturar dispositivos iOS.
+  * *Swift Pair Spam:* Ataque DOS contra dispositivos Windows.
+* **Evil Portal (Rogue AP):** * Despliega un portal cautivo falso ("WIFI_GRATIS").
+  * Servidor DNS/Web asíncrono que captura credenciales ingresadas y las guarda automáticamente en `passwords.txt` dentro de la tarjeta MicroSD.
+
+### ⚙️ Optimización de Hardware
+* **SD_MMC Nativo a 1-Bit:** Se reescribió el driver de la MicroSD para utilizar los pines traseros soldados en la placa base del ESP32-S3 N16R8 (`CMD: 38`, `CLK: 39`, `D0: 40`), evitando colisiones y cortocircuitos lógicos con la memoria PSRAM Octal. Lectura y escritura a velocidad extrema sin "Brownouts".
+
+## 🛠️ Tecnologías Utilizadas
+* **Plataforma:** PlatformIO / Arduino Core para ESP32
+* **Hardware:** ESP32-S3 (N16R8), Display TFT GC9A01 (240x240), Módulo Joystick analógico.
+* **Gráficos:** Motor nativo `Arduino_Canvas` sin LVGL (para reservar ciclos de CPU al sniffing de red).
+
+---
+*Desarrollado con precisión matemática y potencia de procesamiento puro.*
