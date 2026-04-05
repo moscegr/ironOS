@@ -38,7 +38,7 @@ private:
 
 public:
     const char* obtenerNombre() override { return "SNAKE"; }
-    const uint8_t* obtenerEmoji() override { return emoji_game; }
+    const uint8_t* obtenerEmoji() override { return emoji_snake; }
     
     void setup() override { randomSeed(esp_random()); }
 
@@ -90,7 +90,7 @@ public:
             
             Launcher::dibujarTextoCentrado(canvas, "< Clic = Reintentar", 170, 1, IRON_CYAN);
             
-            canvas->drawBitmap(120 - 45, 195, emoji_back, 16, 16, IRON_CYAN);
+            canvas->drawBitmap(120 - 45, 195, emoji_back, 32, 32, IRON_CYAN);
             canvas->setCursor(120 - 25, 195);
             canvas->setTextColor(IRON_RED);
             canvas->print("DOBLE CLICK");

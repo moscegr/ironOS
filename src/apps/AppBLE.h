@@ -242,7 +242,7 @@ public:
                     Launcher::dibujarTextoCentrado(canvas, "Clic/Der = Ver Datos", 175, 1, IRON_DARK);
                 }
                 
-                canvas->drawBitmap(120 - 45, 200, emoji_back, 16, 16, IRON_CYAN);
+                canvas->drawBitmap(120 - 45, 200, emoji_back, 32, 32, IRON_CYAN);
                 canvas->setCursor(120 - 25, 200);
                 canvas->setTextColor(IRON_RED);
                 canvas->print("DOBLE CLICK");
@@ -298,7 +298,7 @@ public:
                 Launcher::dibujarTextoCentrado(canvas, distStr, 145, 1, WHITE);
                 Launcher::dibujarTextoCentrado(canvas, "< Volver = Clic/Izq", 175, 1, IRON_DARK);
 
-                canvas->drawBitmap(120 - 45, 200, emoji_back, 16, 16, IRON_CYAN);
+                canvas->drawBitmap(120 - 45, 200, emoji_back, 32, 32, IRON_CYAN);
                 canvas->setCursor(120 - 25, 200);
                 canvas->setTextColor(IRON_RED);
                 canvas->print("DOBLE CLICK");

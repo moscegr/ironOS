@@ -124,7 +124,7 @@ public:
     AppEvilPortal() : server(80) {}
 
     const char* obtenerNombre() override { return "EVIL PORTAL"; }
-    const uint8_t* obtenerEmoji() override { return emoji_game; } // Usa el emoji que prefieras
+    const uint8_t* obtenerEmoji() override { return emoji_evilportal; } // Usa el emoji que prefieras
     
     void setup() override {}
 
@@ -235,8 +235,9 @@ public:
 
             // Instrucción genérica (se sobreescribe con el fondo negro, pero asegura limpieza)
             if(estado == MENU) {
-                canvas->drawBitmap(120 - 45, 195, emoji_back, 16, 16, IRON_CYAN);
-                canvas->setCursor(120 - 25, 195); canvas->setTextColor(IRON_RED); canvas->print("DOBLE CLICK");
+                canvas->drawBitmap(120 - 45, 195, emoji_back, 32, 32, IRON_CYAN);
+                canvas->setCursor(120 - 25, 195); canvas->setTextColor(IRON_RED); 
+                canvas->print("DOBLE CLICK");
             }
 
             canvas->flush();

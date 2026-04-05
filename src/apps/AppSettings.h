@@ -107,7 +107,7 @@ public:
 
             Launcher::dibujarTextoCentrado(canvas, "< Ajustar >", 175, 1, IRON_DARK);
 
-            canvas->drawBitmap(120 - 45, 195, emoji_back, 16, 16, IRON_CYAN);
+            canvas->drawBitmap(120 - 45, 195, emoji_back, 32, 32, IRON_CYAN);
             canvas->setCursor(120 - 25, 195);
             canvas->setTextColor(IRON_RED);
             canvas->setTextSize(1);

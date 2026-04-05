@@ -3,6 +3,10 @@
 #include "config.h"
 #include "core/Display.h"
 #include "ui/Launcher.h"
+
+// Inclusiones de las Apps 
+#include "apps/AppSpamBLE.h"
+#include "apps/AppSpamWifi.h"
 #include "apps/AppWiFi.h"
 #include "apps/AppInfo.h"
 #include "apps/AppSettings.h"
@@ -13,8 +17,6 @@
 #include "apps/AppEvilTwin.h"
 #include "apps/AppMarauder.h"
 #include "apps/AppEvilPortal.h"
-#include "apps/AppSpamBLE.h"
-#include "apps/AppSpamWifi.h"
 
 // Variables Globales de Calibración
 bool joyEjeY_esVertical = true;
@@ -22,24 +24,30 @@ bool joyInvVertical = false;
 bool joyInvHorizontal = false;
 Preferences preferencias;
 
+// Instancias de Apps
 AppEvilPortal evilPortalApp;
-AppMarauder marauderApp;
-AppWiFi wifiApp;
-AppSettings settingsApp;
-AppSD sdApp;
-AppStats statsApp;
-AppSnake snakeApp;
-AppInfo infoApp;
-AppBLE bleApp;     
-AppSpamBLE spamAppBLE; 
-AppSpamm spamAppWifi;     
-//AppSpamBLE spamAppBLE; 
-//AppSpamWifi spamAppWifi;   
-AppEvilTwin evilTwinApp; 
-App* catalogoApps[] = {/*&spamAppBLE, &spamAppWifi,*/ &evilPortalApp, &marauderApp, &wifiApp, &bleApp, &sdApp, &settingsApp, &statsApp, &snakeApp, &infoApp, &evilTwinApp }; 
+AppMarauder   marauderApp;
+AppWiFi       wifiApp;
+AppSettings   settingsApp;
+AppSD         sdApp;
+AppStats      statsApp;
+AppSnake      snakeApp;
+AppInfo       infoApp;
+AppBLE        bleApp;     
+AppSpamBLE    spamAppBLE; 
+AppSpamWifi   spamAppWifi;     
+AppEvilTwin   evilTwinApp; 
+
+// Catálogo maestro
+App* catalogoApps[] = {&spamAppBLE, &spamAppWifi, &evilPortalApp, &marauderApp, &wifiApp, &bleApp, &sdApp, &settingsApp, &statsApp, &snakeApp, &infoApp, &evilTwinApp }; 
 int totalApps = 12;
 int indiceActual = 0;
 App* appActiva = nullptr;
+
+// --- VARIABLES DE MOTOR UNIFICADO Y ANIMACIÓN ---
+unsigned long ultimoMovimientoMain = 0;
+int anguloNeonMain = 0;
+unsigned long ultimoFrameNeonMain = 0;
 
 unsigned long tiempoPresionado = 0;
 unsigned long ultimoTiempoClick = 0;
@@ -71,7 +79,38 @@ EventosBoton leerEventoBoton() {
 }
 
 void setup() {
-    delay(2000); 
+    Display::init(); // Inicializar pantalla primero para el splash
+
+    // --- SPLASH SCREEN: EMBLEMA DE "THE FLASH" (Renderizado Geométrico) ---
+    Display::canvas->fillScreen(BLACK);
+
+    // 1. Círculo Exterior (Rojo Flash puro)
+    Display::canvas->fillCircle(120, 95, 38, 0xF800); 
+    
+    // 2. Círculo Interior (Blanco puro)
+    Display::canvas->fillCircle(120, 95, 28, 0xFFFF); 
+
+    // 3. El Rayo (Amarillo Eléctrico)
+    // Calculado matemáticamente con triángulos para sobresalir del círculo (Forma de Z)
+    
+    // Mitad Superior del rayo
+    Display::canvas->fillTriangle(135, 45, 95, 100, 128, 100, 0xFFE0);
+    // Mitad Inferior del rayo (Se superpone perfectamente en el centro)
+    Display::canvas->fillTriangle(112, 90, 145, 90, 105, 145, 0xFFE0);
+
+    // Texto de la plataforma
+    Display::canvas->setTextSize(3);
+    Display::canvas->setTextColor(0xFFE0); // Letras Amarillas para combinar
+    
+    // Centrado perfecto de la palabra "IRONOS"
+    int16_t x1, y1; uint16_t w, h;
+    Display::canvas->getTextBounds("IRONOS", 0, 0, &x1, &y1, &w, &h);
+    Display::canvas->setCursor((240 - w) / 2, 160);
+    Display::canvas->print("IRONOS");
+
+    Display::refresh();
+    delay(2000); // 2 Segundos de gloria
+
     Serial.begin(115200);
     
     preferencias.begin("ironos", false);
@@ -79,9 +118,9 @@ void setup() {
     joyInvVertical = preferencias.getBool("invV", false); 
     joyInvHorizontal = preferencias.getBool("invH", false); 
     
-    Display::init();
     pinMode(JOY_SW, INPUT_PULLUP);
     
+    // Configuración inicial de las apps
     for(int i = 0; i < totalApps; i++) {
         catalogoApps[i]->setup();
     }
@@ -90,20 +129,43 @@ void setup() {
 void loop() {
     EventosBoton evento = leerEventoBoton();
     
+    // --- ANIMACIÓN GLOBAL DEL MENÚ PRINCIPAL ---
+    if (millis() - ultimoFrameNeonMain > 30) {
+        anguloNeonMain = (anguloNeonMain + 2) % 360; // Giro lento y elegante
+        ultimoFrameNeonMain = millis();
+    }
+    
     if (appActiva == nullptr) {
         
-        // --- MOTOR UNIFICADO DE NAVEGACIÓN ---
-        int valVert = joyEjeY_esVertical ? analogRead(JOY_Y) : analogRead(JOY_X);
-        bool arriba = joyInvVertical ? (valVert > 3200) : (valVert < 800);
-        bool abajo = joyInvVertical ? (valVert < 800) : (valVert > 3200);
+        // --- MOTOR UNIFICADO DE NAVEGACIÓN (Horizontal: Izquierda/Derecha) ---
+        int valHoriz = joyEjeY_esVertical ? analogRead(JOY_X) : analogRead(JOY_Y);
+        bool izquierda = joyInvHorizontal ? (valHoriz > 3200) : (valHoriz < 800);
+        bool derecha = joyInvHorizontal ? (valHoriz < 800) : (valHoriz > 3200);
         
-        if (arriba) { indiceActual--; delay(150); }
-        if (abajo) { indiceActual++; delay(150); }
-        
-        if (indiceActual >= totalApps) indiceActual = 0;
-        if (indiceActual < 0) indiceActual = totalApps - 1;
+        if (millis() - ultimoMovimientoMain > 200) { 
+            if (izquierda) { indiceActual--; ultimoMovimientoMain = millis(); }
+            if (derecha)   { indiceActual++; ultimoMovimientoMain = millis(); }
+            
+            if (indiceActual >= totalApps) indiceActual = 0;
+            if (indiceActual < 0) indiceActual = totalApps - 1;
+        }
 
+        // Dibuja el HUD Táctico y el ícono
         Launcher::dibujar(Display::canvas, catalogoApps, totalApps, indiceActual);
+        
+        // --- MOTOR DE DOBLE ANILLO CYBERPUNK ---
+        int anguloInverso = (360 - (anguloNeonMain * 2)) % 360; 
+
+        // 1. Anillo Exterior (Gira a la Derecha | Magenta)
+        Display::canvas->drawCircle(120, 120, 118, 0x10A2); 
+        Display::canvas->drawArc(120, 120, 119, 114, anguloNeonMain, (anguloNeonMain + 100) % 360, 0xF81F); 
+        Display::canvas->drawArc(120, 120, 119, 114, (anguloNeonMain + 180) % 360, (anguloNeonMain + 280) % 360, 0xF81F); 
+
+        // 2. Anillo Interior (Gira a la Izquierda | Cyan)
+        Display::canvas->drawCircle(120, 120, 108, 0x10A2); 
+        Display::canvas->drawArc(120, 120, 109, 106, anguloInverso, (anguloInverso + 80) % 360, 0x07FF); 
+        Display::canvas->drawArc(120, 120, 109, 106, (anguloInverso + 180) % 360, (anguloInverso + 260) % 360, 0x07FF); 
+
         Display::refresh();
 
         if (evento == EVENTO_CLICK) {
@@ -119,7 +181,7 @@ void loop() {
             appActiva = nullptr; 
             
             Display::canvas->fillScreen(BLACK);
-            Display::canvas->drawCircle(120, 120, 118, IRON_RED);
+            Display::canvas->drawCircle(120, 120, 118, IRON_RED); 
             Display::refresh();
             delay(150);
         }

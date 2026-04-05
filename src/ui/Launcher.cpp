@@ -1,67 +1,83 @@
-#include "ui/Launcher.h"
+#include "Launcher.h"
+#include "config.h"
+#include "Emojis.h" 
 
-// --- LA FUNCIÓN RECUPERADA ---
-void Launcher::dibujarTextoCentrado(Arduino_Canvas* canvas, const char* texto, int y, int tamano, uint16_t color) {
-    int16_t x1, y1;
-    uint16_t w, h;
-    canvas->setTextSize(tamano);
-    canvas->getTextBounds(texto, 0, 0, &x1, &y1, &w, &h);
-    canvas->setTextColor(color);
-    canvas->setCursor(120 - (w / 2), y);
-    canvas->print(texto);
-}
+// Colores Cyberpunk (Máxima saturación RGB565)
+#define CYBER_MAGENTA 0xF81F
+#define CYBER_CYAN    0x07FF
+#define CYBER_YELLOW  0xFFE0
+#define CYBER_LIME    0x07E0
+#define CYBER_DARK    0x10A2 // Gris azulado para fondos
 
-// --- FUNCIÓN DEL MENÚ (CARRUSEL) ---
-void Launcher::dibujarItemListaCentrado(Arduino_Canvas* canvas, const uint8_t* icon, const char* text, int y_center, int size, uint16_t color, bool selected) {
-    int16_t x1, y1;
-    uint16_t w_text, h_text;
-    canvas->setTextSize(size);
-    canvas->getTextBounds(text, 0, 0, &x1, &y1, &w_text, &h_text);
-
-    int icono_w = 16, icono_h = 16, padding = 8;
-    int total_w = icono_w + padding + w_text;
-    int start_x = 120 - (total_w / 2);
-
-    canvas->drawBitmap(start_x, y_center - (icono_h / 2), icon, icono_w, icono_h, color);
-    canvas->setTextColor(color);
-    canvas->setCursor(start_x + icono_w + padding, y_center - (h_text / 2));
-    canvas->print(text);
-
-    if (selected) {
-        // === MOTOR DE ANIMACIÓN ===
-        // Usamos millis() para crear un movimiento fluido. 
-        // El número divisor (15) controla qué tan rápido gira.
-        int tiempo = millis();
-        int anguloAnimado = (tiempo / 15) % 360; 
-
-        // Dibujamos los arcos originales sumándoles el ángulo animado
-        canvas->fillArc(120, 120, 118, 112, anguloAnimado - 40, anguloAnimado + 40, color); 
-        canvas->fillArc(120, 120, 118, 112, anguloAnimado + 140, anguloAnimado + 220, color);
+// Motor de Renderizado Escalado: Multiplica píxeles sin gastar más memoria Flash
+void dibujarBitmapEscalado(Arduino_Canvas* canvas, int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, int escala) {
+    int16_t byteWidth = (w + 7) / 8; // Bytes por fila
+    for (int16_t j = 0; j < h; j++) {
+        for (int16_t i = 0; i < w; i++) {
+            // Leer el bit específico de PROGMEM
+            if (pgm_read_byte(bitmap + j * byteWidth + i / 8) & (128 >> (i & 7))) {
+                // Dibujar un rectángulo del tamaño de la escala en lugar de un solo píxel
+                canvas->fillRect(x + i * escala, y + j * escala, escala, escala, color);
+            }
+        }
     }
 }
 
-void Launcher::dibujar(Arduino_Canvas* canvas, App** apps, int totalApps, int index) {
+void Launcher::dibujarTextoCentrado(Arduino_Canvas* canvas, const char* texto, int y, int size, uint16_t color) {
+    canvas->setTextSize(size);
+    canvas->setTextColor(color);
+    int16_t x1, y1;
+    uint16_t w, h;
+    canvas->getTextBounds(texto, 0, y, &x1, &y1, &w, &h);
+    canvas->setCursor((240 - w) / 2, y);
+    canvas->print(texto);
+}
+
+void Launcher::dibujar(Arduino_Canvas* canvas, App** apps, int total, int seleccionado) {
     canvas->fillScreen(BLACK);
-    
-    // Anillos Exteriores
-    canvas->drawCircle(120, 120, 118, IRON_CYAN);
-    canvas->drawArc(120, 120, 115, 105, 0, 360, IRON_DARK);
-    
-    // Lineas decorativas "Ventana"
-    canvas->drawLine(30, 85, 210, 85, IRON_BLUE);
-    canvas->drawLine(30, 155, 210, 155, IRON_BLUE);
 
-    int prevIdx = (index - 1 < 0) ? totalApps - 1 : index - 1;
-    int nextIdx = (index + 1 >= totalApps) ? 0 : index + 1;
+    // --- FLECHAS DE NAVEGACIÓN LATERALES (Centradas con el icono masivo) ---
+    canvas->setTextSize(3);
+    canvas->setTextColor(CYBER_LIME);
+    canvas->setCursor(12, 80); canvas->print("<"); 
+    canvas->setCursor(212, 80); canvas->print(">");
 
-    // Elementos de la lista
-    dibujarItemListaCentrado(canvas, apps[prevIdx]->obtenerEmoji(), apps[prevIdx]->obtenerNombre(), 60, 1, IRON_BLUE, false);
-    dibujarItemListaCentrado(canvas, apps[nextIdx]->obtenerEmoji(), apps[nextIdx]->obtenerNombre(), 180, 1, IRON_BLUE, false);
-    dibujarItemListaCentrado(canvas, apps[index]->obtenerEmoji(), apps[index]->obtenerNombre(), 120, 3, WHITE, true);
+    // --- DECORACIONES DEL HUD TÁCTICO CENTRAL ---
+    canvas->drawLine(30, 160, 210, 160, CYBER_DARK); // Línea divisoria
+    canvas->fillRect(110, 159, 20, 3, CYBER_MAGENTA); // Acento central
+
+    // --- ICONO CENTRAL ENMARCADO (ESCALADO A 64x64 PÍXELES) ---
+    int cx = 120;
+    int cy = 90; // Centro geométrico del visor
+
+    // Brackets ajustados perfectamente para rodear el icono gigante de 64x64
+    int offset = 40; // Caja total de 80x80
+    int length = 16; // Esquinas más largas
     
-    // Título Superior
-    canvas->setTextSize(2);
-    canvas->setTextColor(IRON_GREEN);
-    canvas->setCursor(61, 25);
-    canvas->print("MOS ironOS");
+    // Arriba Izquierda
+    canvas->drawLine(cx - offset, cy - offset, cx - offset + length, cy - offset, CYBER_CYAN);
+    canvas->drawLine(cx - offset, cy - offset, cx - offset, cy - offset + length, CYBER_CYAN);
+    // Arriba Derecha
+    canvas->drawLine(cx + offset, cy - offset, cx + offset - length, cy - offset, CYBER_CYAN);
+    canvas->drawLine(cx + offset, cy - offset, cx + offset, cy - offset + length, CYBER_CYAN);
+    // Abajo Izquierda
+    canvas->drawLine(cx - offset, cy + offset, cx - offset + length, cy + offset, CYBER_CYAN);
+    canvas->drawLine(cx - offset, cy + offset, cx - offset, cy + offset - length, CYBER_CYAN);
+    // Abajo Derecha
+    canvas->drawLine(cx + offset, cy + offset, cx + offset - length, cy + offset, CYBER_CYAN);
+    canvas->drawLine(cx + offset, cy + offset, cx + offset, cy + offset - length, CYBER_CYAN);
+
+    // Extraer el emoji y escalarlo matemáticamente x2
+    const uint8_t* emoji = apps[seleccionado]->obtenerEmoji();
+    if (emoji) {
+        // Al multiplicar por 2, el ancho es 64. Lo restamos al centro (cx - 32)
+        dibujarBitmapEscalado(canvas, cx - 32, cy - 32, emoji, 32, 32, CYBER_YELLOW, 2);
+    }
+
+    // --- NOMBRE DE LA APP (Ajustado abajo del HUD) ---
+    dibujarTextoCentrado(canvas, apps[seleccionado]->obtenerNombre(), 172, 2, WHITE);
+
+    // --- HUD INFERIOR: SALIDA SENCILLA ---
+    // Flecha sencilla <- solicitada por el Ingeniero
+    dibujarTextoCentrado(canvas, "<- SALIR (DOBLE CLIC)", 210, 1, IRON_RED);
 }

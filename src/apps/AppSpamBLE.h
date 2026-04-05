@@ -1,5 +1,5 @@
-#ifndef APPBLE_H
-#define APPBLE_H
+#ifndef APPSPAMBLE_H
+#define APPSPAMBLE_H
 #include "App.h"
 #include "Emojis.h"
 #include "ui/Launcher.h"
@@ -14,6 +14,10 @@ static int dispositivosBLE = 0;
 static String nombresBLE[10];
 static String macsBLE[10];
 
+// El LED RGB interno en las placas ESP32-S3
+#define LED_PIN 48
+
+
 class IronBLECallbacks : public BLEAdvertisedDeviceCallbacks {
     void onResult(BLEAdvertisedDevice advertisedDevice) {
         if (dispositivosBLE < 10) {
@@ -24,7 +28,7 @@ class IronBLECallbacks : public BLEAdvertisedDeviceCallbacks {
     }
 };
 
-class AppBLE : public App {
+class AppSpamBLE : public App {
 private:
     enum EstadoBLE { MENU_RAIZ, ESCANEO, SPAM_APPLE, SPAM_WINDOWS };
     EstadoBLE estadoActual = MENU_RAIZ;
@@ -98,7 +102,7 @@ private:
 
 public:
     const char* obtenerNombre() override { return "BLE MARAUDER"; }
-    const uint8_t* obtenerEmoji() override { return emoji_game; } // Emoji Bluetooth/Radar
+    const uint8_t* obtenerEmoji() override { return emoji_blespam; } // Emoji Bluetooth/Radar
     
     void setup() override {}
 
@@ -234,8 +238,9 @@ public:
             }
 
             if(estadoActual == MENU_RAIZ) {
-                canvas->drawBitmap(120 - 45, 195, emoji_back, 16, 16, IRON_CYAN);
-                canvas->setCursor(120 - 25, 195); canvas->setTextColor(IRON_RED); canvas->print("DOBLE CLICK");
+                canvas->drawBitmap(120 - 45, 195, emoji_back, 32, 32, IRON_CYAN);
+                canvas->setCursor(120 - 25, 195); canvas->setTextColor(IRON_RED); 
+                canvas->print("DOBLE CLICK");
             }
 
             canvas->flush();

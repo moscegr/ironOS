@@ -157,7 +157,7 @@ public:
                 }
             }
 
-            canvas->drawBitmap(120 - 45, 200, emoji_back, 16, 16, sdOk ? IRON_GREEN : IRON_RED);
+            canvas->drawBitmap(120 - 45, 200, emoji_back, 32, 32, sdOk ? IRON_GREEN : IRON_RED);
             canvas->setCursor(120 - 25, 200);
             canvas->setTextColor(IRON_RED);
             canvas->print("DOBLE CLICK");

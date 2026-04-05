@@ -1,5 +1,5 @@
-#ifndef APPSPAMMER_H
-#define APPSPAMMER_H
+#ifndef APPSPAMWIFI_H
+#define APPSPAMWIFI_H
 #include "App.h"
 #include "Emojis.h"
 #include "ui/Launcher.h"
@@ -10,7 +10,7 @@
 // El LED RGB interno en las placas ESP32-S3
 #define LED_PIN 48
 
-class AppSpammer : public App {
+class AppSpamWifi : public App {
 private:
     String redesFalsas[20];
     uint8_t macsFalsas[20][6];
@@ -178,7 +178,7 @@ public:
             Launcher::dibujarTextoCentrado(canvas, "...y 17 mas", 160, 1, IRON_DARK);
 
             // Instrucción de Salida
-            canvas->drawBitmap(120 - 45, 195, emoji_back, 16, 16, IRON_CYAN);
+            canvas->drawBitmap(120 - 45, 195, emoji_back, 32, 32, IRON_CYAN);
             canvas->setCursor(120 - 25, 195);
             canvas->setTextColor(IRON_RED);
             canvas->setTextSize(1);

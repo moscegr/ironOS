@@ -336,7 +336,7 @@ public:
                 Launcher::dibujarTextoCentrado(canvas, "Esperando conexiones...", 160, 1, IRON_DARK);
             }
 
-            canvas->drawBitmap(120 - 45, 200, emoji_back, 16, 16, colorHUD);
+            canvas->drawBitmap(120 - 45, 200, emoji_back, 32, 32, colorHUD);
             canvas->setCursor(120 - 25, 200);
             canvas->setTextColor(IRON_RED);
             canvas->print("DOBLE CLICK");
