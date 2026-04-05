@@ -10,9 +10,11 @@
 #include "apps/AppSnake.h"
 #include "apps/AppSD.h"
 #include "apps/AppBLE.h"
-#include "apps/AppSpammer.h"
 #include "apps/AppEvilTwin.h"
 #include "apps/AppMarauder.h"
+#include "apps/AppEvilPortal.h"
+#include "apps/AppSpamBLE.h"
+#include "apps/AppSpamWifi.h"
 
 // Variables Globales de Calibración
 bool joyEjeY_esVertical = true;
@@ -20,6 +22,7 @@ bool joyInvVertical = false;
 bool joyInvHorizontal = false;
 Preferences preferencias;
 
+AppEvilPortal evilPortalApp;
 AppMarauder marauderApp;
 AppWiFi wifiApp;
 AppSettings settingsApp;
@@ -27,11 +30,14 @@ AppSD sdApp;
 AppStats statsApp;
 AppSnake snakeApp;
 AppInfo infoApp;
-AppBLE bleApp;           
-AppSpammer spammerApp;   
+AppBLE bleApp;     
+AppSpamBLE spamAppBLE; 
+AppSpamm spamAppWifi;     
+//AppSpamBLE spamAppBLE; 
+//AppSpamWifi spamAppWifi;   
 AppEvilTwin evilTwinApp; 
-App* catalogoApps[] = {&marauderApp, &wifiApp, &bleApp, &spammerApp, &sdApp, &settingsApp, &statsApp, &snakeApp, &infoApp, &evilTwinApp }; 
-int totalApps = 10;
+App* catalogoApps[] = {/*&spamAppBLE, &spamAppWifi,*/ &evilPortalApp, &marauderApp, &wifiApp, &bleApp, &sdApp, &settingsApp, &statsApp, &snakeApp, &infoApp, &evilTwinApp }; 
+int totalApps = 12;
 int indiceActual = 0;
 App* appActiva = nullptr;
 
