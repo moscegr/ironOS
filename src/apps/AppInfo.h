@@ -93,7 +93,7 @@ public:
 
                 if (idx == indiceScroll) {
                     // Resaltado de la línea seleccionada
-                    canvas->fillRoundRect(15, yPos - 7, 210, 20, 3, IRON_DARK);
+                    canvas->fillRoundRect(15, yPos - 7, 210, 20, 3, IRON_RED);
                     canvas->fillTriangle(20, yPos-1, 20, yPos+7, 25, yPos+3, IRON_CYAN);
                     canvas->setTextColor(WHITE);
                 } else {
@@ -108,7 +108,7 @@ public:
 
             // --- INSTRUCCIÓN DE SALIDA ---
             canvas->drawBitmap(120 - 45, 200, emoji_back, 32, 32, IRON_CYAN);
-            canvas->setCursor(120 - 25, 200);
+            canvas->setCursor(120 - 25, 212);
             canvas->setTextColor(IRON_RED);
             canvas->print("DOBLE CLICK");
 

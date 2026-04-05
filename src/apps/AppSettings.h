@@ -96,7 +96,7 @@ public:
                 
                 // Resaltar la opción seleccionada
                 if (i == sel) {
-                    canvas->fillRoundRect(10, yPos - 12, 220, 24, 3, IRON_DARK);
+                    canvas->fillRoundRect(10, yPos - 12, 220, 24, 3, IRON_RED);
                     canvas->fillTriangle(15, yPos-4, 15, yPos+4, 20, yPos, IRON_CYAN); 
                     canvas->fillTriangle(225, yPos-4, 225, yPos+4, 220, yPos, IRON_CYAN); 
                 }
@@ -107,10 +107,9 @@ public:
 
             Launcher::dibujarTextoCentrado(canvas, "< Ajustar >", 175, 1, IRON_DARK);
 
-            canvas->drawBitmap(120 - 45, 195, emoji_back, 32, 32, IRON_CYAN);
-            canvas->setCursor(120 - 25, 195);
+            canvas->drawBitmap(120 - 45, 200, emoji_back, 32, 32, IRON_CYAN);
+            canvas->setCursor(120 - 25, 212);
             canvas->setTextColor(IRON_RED);
-            canvas->setTextSize(1);
             canvas->print("DOBLE CLICK");
 
             canvas->flush();

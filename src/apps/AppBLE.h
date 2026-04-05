@@ -136,11 +136,11 @@ public:
                 canvas->drawArc(120, 120, 117, 113, (anguloNeon + 20) % 360, (anguloNeon + 50) % 360, IRON_CYAN); 
                 canvas->drawArc(120, 120, 116, 114, (anguloNeon + 40) % 360, (anguloNeon + 45) % 360, WHITE); 
 
-                Launcher::dibujarTextoCentrado(canvas, "ESCANEO DE BLUES...", 100, 2, IRON_CYAN);
+                Launcher::dibujarTextoCentrado(canvas, "ESCANEO DE BLUES !", 100, 2, IRON_CYAN);
                 
                 char tiempoStr[32];
                 sprintf(tiempoStr, "Termina en: %d s", segundosRestantes);
-                Launcher::dibujarTextoCentrado(canvas, tiempoStr, 130, 1, WHITE);
+                Launcher::dibujarTextoCentrado(canvas, tiempoStr, 130, 2, WHITE);
 
                 canvas->flush();
                 pantallaActualizada = true;

@@ -175,7 +175,7 @@ public:
                 canvas->print(redesFalsas[i]);
             }
 
-            Launcher::dibujarTextoCentrado(canvas, "...y 15 mas", 160, 1, IRON_DARK);
+            Launcher::dibujarTextoCentrado(canvas, "...y 15 mas", 180, 1, IRON_DARK);
 
             // Instrucción de Salida
             canvas->drawBitmap(120 - 45, 200, emoji_back, 32, 32, IRON_CYAN);

@@ -129,7 +129,7 @@ public:
             canvas->drawArc(120, 120, 116, 114, (anguloNeon + 40) % 360, (anguloNeon + 45) % 360, WHITE); 
             
             Launcher::dibujarTextoCentrado(canvas, "TELEMETRIA DE SISTEMA", 35, 1, IRON_CYAN);
-            canvas->drawLine(20, 45, 220, 45, IRON_DARK);
+            canvas->drawLine(20, 45, 220, 45, IRON_RED);
 
             int inicio = indiceScroll - 1;
             if (inicio < 0) inicio = 0;
@@ -142,7 +142,7 @@ public:
                 uint16_t colorTexto = (idx == indiceScroll) ? WHITE : IRON_BLUE;
 
                 if (idx == indiceScroll) {
-                    canvas->fillRoundRect(10, yBase - 8, 220, 40, 3, IRON_DARK);
+                    canvas->fillRoundRect(10, yBase - 8, 220, 40, 3, IRON_RED);
                     canvas->fillTriangle(15, yBase+6, 15, yBase+14, 20, yBase+10, IRON_CYAN);
                 }
 
@@ -195,8 +195,8 @@ public:
                 }
             }
 
-            canvas->drawBitmap(120 - 45, 195, emoji_back, 32, 32, IRON_CYAN);
-            canvas->setCursor(120 - 25, 195);
+            canvas->drawBitmap(120 - 45, 200, emoji_back, 32, 32, IRON_CYAN);
+            canvas->setCursor(120 - 25, 212);
             canvas->setTextColor(IRON_RED);
             canvas->print("DOBLE CLICK");
 
