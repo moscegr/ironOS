@@ -5,6 +5,7 @@
 #include "ui/Launcher.h"
 #include "config.h" 
 #include <esp_mac.h>
+#include <SD_MMC.h> // Añadido para leer la SD
 
 class AppStats : public App {
 private:
@@ -16,9 +17,9 @@ private:
     int anguloNeon = 0;
     unsigned long ultimoFrameNeon = 0;
     
-    // Scroll de bloques
+    // Scroll de bloques (¡Ahora son 7 para incluir la SD!)
     int indiceScroll = 0;
-    const int NUM_BLOQUES = 6;
+    const int NUM_BLOQUES = 7;
 
     // --- VARIABLES DE TELEMETRÍA (Cache) ---
     char txtUp[32];
@@ -27,9 +28,15 @@ private:
     int pctPsram = 0; 
     float freePsramMB = 0; 
     uint32_t totalPsram = 0;
-    uint32_t freePsram = 0; // <--- ESTA ERA LA QUE FALTABA DECLARAR
+    uint32_t freePsram = 0; 
     int pctSketch = 0; 
     float freeSketchMB = 0;
+    
+    // Variables de la SD fusionadas
+    bool sdActiva = false;
+    int pctSd = 0;
+    uint32_t freeSdMB = 0;
+
     int cpuFreq = 0; 
     int tempChip = 0;
     int flashMB = 0; 
@@ -50,9 +57,16 @@ public:
         ultimoFrameNeon = millis();
         ultimoMovimiento = millis();
         pantallaActualizada = false;
+
+        // --- CORRECCIÓN: INICIALIZAR LA MICROSD ---
+        SD_MMC.setPins(SD_MMC_CLK, SD_MMC_CMD, SD_MMC_D0);
+        sdActiva = SD_MMC.begin("/sdcard", true);
     }
     
-    void alSalir() override {}
+    void alSalir() override {
+        // --- APAGAR LA MICROSD AL SALIR PARA AHORRAR ENERGÍA ---
+        if (sdActiva) SD_MMC.end();
+    }
 
     void loop(Arduino_Canvas* canvas) override {
         
@@ -105,13 +119,26 @@ public:
             pctSketch = (usedSketch * 100) / totalSketch;
             freeSketchMB = ESP.getFreeSketchSpace() / 1048576.0;
 
-            // 5. HARDWARE
+            // 5. MICRO SD (FUSIONADO)
+            if (SD_MMC.cardSize() > 0) {
+                sdActiva = true;
+                uint32_t totalSd = SD_MMC.totalBytes() / 1048576;
+                uint32_t usedSd = SD_MMC.usedBytes() / 1048576;
+                if (totalSd > 0) {
+                    pctSd = (usedSd * 100) / totalSd;
+                    freeSdMB = totalSd - usedSd;
+                }
+            } else {
+                sdActiva = false;
+            }
+
+            // 6. HARDWARE
             cpuFreq = ESP.getCpuFreqMHz();
             tempChip = (int)temperatureRead();
             flashMB = ESP.getFlashChipSize() / 1048576;
             flashFreq = ESP.getFlashChipSpeed() / 1000000;
 
-            // 6. SISTEMA
+            // 7. SISTEMA
             uint8_t mac[6];
             esp_read_mac(mac, ESP_MAC_WIFI_STA);
             sprintf(txtMac, "MAC: %02X:%02X:%02X:%02X:%02X:%02X", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
@@ -167,7 +194,7 @@ public:
                             sprintf(bufferLin, "PSRAM(U: %d%% L: %.1fMB)", pctPsram, freePsramMB);
                             canvas->setCursor(28, yBase); canvas->print(bufferLin);
                             canvas->fillRect(30, yBase + 16, 160, 6, (idx == indiceScroll) ? BLACK : IRON_DARK);
-                            int w = (160 * pctPsram) / 100; if(w==0) w=2;
+                            int w = (160 * pctPsram) / 100; if(w==0 && pctPsram>0) w=2;
                             canvas->fillRect(30, yBase + 16, w, 6, IRON_CYAN);
                         } else {
                             canvas->setCursor(28, yBase + 8); canvas->setTextColor(IRON_RED);
@@ -180,13 +207,25 @@ public:
                         canvas->fillRect(30, yBase + 16, 160, 6, (idx == indiceScroll) ? BLACK : IRON_DARK); 
                         canvas->fillRect(30, yBase + 16, (160 * pctSketch) / 100, 6, IRON_CYAN); 
                         break;
-                    case 4:
+                    case 4: // NUEVO BLOQUE MICRO SD
+                        if (sdActiva) {
+                            sprintf(bufferLin, "SD   (U: %d%% L: %luMB)", pctSd, freeSdMB);
+                            canvas->setCursor(28, yBase); canvas->print(bufferLin);
+                            canvas->fillRect(30, yBase + 16, 160, 6, (idx == indiceScroll) ? BLACK : IRON_DARK); 
+                            int w = (160 * pctSd) / 100; if(w==0 && pctSd>0) w=2;
+                            canvas->fillRect(30, yBase + 16, w, 6, IRON_CYAN);
+                        } else {
+                            canvas->setCursor(28, yBase + 8); canvas->setTextColor(IRON_RED);
+                            canvas->print("SD NO DETECTADA");
+                        }
+                        break;
+                    case 5:
                         sprintf(bufferLin, "CPU: %d MHz", cpuFreq);
                         canvas->setCursor(28, yBase); canvas->print(bufferLin);
                         sprintf(bufferLin, "FLASH: %d MB @ %d MHz", flashMB, flashFreq);
                         canvas->setCursor(28, yBase + 16); canvas->print(bufferLin);
                         break;
-                    case 5:
+                    case 6:
                         canvas->setCursor(28, yBase); canvas->print(txtMac);
                         canvas->setCursor(28, yBase + 16); 
                         String sdkCorto = String(txtSdk).substring(0, 20); 

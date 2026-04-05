@@ -8,15 +8,14 @@
 #define CYBER_YELLOW  0xFFE0
 #define CYBER_LIME    0x07E0
 #define CYBER_DARK    0x10A2 // Gris azulado para fondos
+#define IRON_RED      0xF800
 
-// Motor de Renderizado Escalado: Multiplica píxeles sin gastar más memoria Flash
+// Motor de Renderizado Escalado
 void dibujarBitmapEscalado(Arduino_Canvas* canvas, int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color, int escala) {
-    int16_t byteWidth = (w + 7) / 8; // Bytes por fila
+    int16_t byteWidth = (w + 7) / 8; 
     for (int16_t j = 0; j < h; j++) {
         for (int16_t i = 0; i < w; i++) {
-            // Leer el bit específico de PROGMEM
             if (pgm_read_byte(bitmap + j * byteWidth + i / 8) & (128 >> (i & 7))) {
-                // Dibujar un rectángulo del tamaño de la escala en lugar de un solo píxel
                 canvas->fillRect(x + i * escala, y + j * escala, escala, escala, color);
             }
         }
@@ -36,50 +35,40 @@ void Launcher::dibujarTextoCentrado(Arduino_Canvas* canvas, const char* texto, i
 void Launcher::dibujar(Arduino_Canvas* canvas, App** apps, int total, int seleccionado) {
     canvas->fillScreen(BLACK);
 
-    // --- FLECHAS DE NAVEGACIÓN LATERALES (Centradas con el icono masivo) ---
+    // --- FLECHAS DE NAVEGACIÓN LATERALES ---
     canvas->setTextSize(3);
     canvas->setTextColor(CYBER_LIME);
     canvas->setCursor(12, 80); canvas->print("<"); 
     canvas->setCursor(212, 80); canvas->print(">");
 
     // --- DECORACIONES DEL HUD TÁCTICO CENTRAL ---
-    canvas->drawLine(30, 160, 210, 160, CYBER_DARK); // Línea divisoria
-    canvas->fillRect(110, 159, 20, 3, CYBER_MAGENTA); // Acento central
+    canvas->drawLine(30, 160, 210, 160, CYBER_DARK); 
+    canvas->fillRect(110, 159, 20, 3, CYBER_MAGENTA); 
 
-    // --- ICONO CENTRAL ENMARCADO (ESCALADO A 64x64 PÍXELES) ---
+    // --- ICONO CENTRAL ENMARCADO ---
     int cx = 120;
-    int cy = 90; // Centro geométrico del visor
-
-    // Brackets ajustados perfectamente para rodear el icono gigante de 64x64
-    int offset = 40; // Caja total de 80x80
-    int length = 16; // Esquinas más largas
+    int cy = 90; 
+    int offset = 40; 
+    int length = 16; 
     
-    // Arriba Izquierda
     canvas->drawLine(cx - offset, cy - offset, cx - offset + length, cy - offset, CYBER_CYAN);
     canvas->drawLine(cx - offset, cy - offset, cx - offset, cy - offset + length, CYBER_CYAN);
-    // Arriba Derecha
     canvas->drawLine(cx + offset, cy - offset, cx + offset - length, cy - offset, CYBER_CYAN);
     canvas->drawLine(cx + offset, cy - offset, cx + offset, cy - offset + length, CYBER_CYAN);
-    // Abajo Izquierda
     canvas->drawLine(cx - offset, cy + offset, cx - offset + length, cy + offset, CYBER_CYAN);
     canvas->drawLine(cx - offset, cy + offset, cx - offset, cy + offset - length, CYBER_CYAN);
-    // Abajo Derecha
     canvas->drawLine(cx + offset, cy + offset, cx + offset - length, cy + offset, CYBER_CYAN);
     canvas->drawLine(cx + offset, cy + offset, cx + offset, cy + offset - length, CYBER_CYAN);
 
-    // Extraer el emoji y escalarlo matemáticamente x2
     const uint8_t* emoji = apps[seleccionado]->obtenerEmoji();
     if (emoji) {
-        // Al multiplicar por 2, el ancho es 64. Lo restamos al centro (cx - 32)
         dibujarBitmapEscalado(canvas, cx - 32, cy - 32, emoji, 32, 32, CYBER_YELLOW, 2);
     }
 
-    // --- NOMBRE DE LA APP (Ajustado abajo del HUD) ---
+    // --- NOMBRE DE LA APP ---
     dibujarTextoCentrado(canvas, apps[seleccionado]->obtenerNombre(), 172, 2, WHITE);
 
     // --- HUD INFERIOR: SALIDA SENCILLA ---
-    // Flecha sencilla <- solicitada por el Ingeniero
     dibujarTextoCentrado(canvas, "MENU PRINCIPAL", 205, 1, IRON_RED);
     dibujarTextoCentrado(canvas, "° ironOS °", 215, 1, IRON_RED);
-    
 }
