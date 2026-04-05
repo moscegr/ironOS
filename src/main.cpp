@@ -11,13 +11,23 @@
 #include "apps/AppInfo.h"
 #include "apps/AppSettings.h"
 #include "apps/AppStats.h"
-#include "apps/AppSnake.h"
 #include "apps/AppSD.h"
 #include "apps/AppBLE.h"
 #include "apps/AppEvilTwin.h"
 #include "apps/AppSniffer.h"
 #include "apps/AppDucky.h"
+#include "apps/AppArcade.h"
 
+// =========================================================================
+// 🛡️ MOTOR DE EVASIÓN DE FIREWALL DE ESPRESSIF (BYPASS 0xC0 DEAUTH)
+// Inyectamos una función fantasma. Gracias a la bandera -Wl,-zmuldefs,
+// el procesador ejecutará esto en lugar de la función original en libnet80211.a
+// =========================================================================
+extern "C" {
+    int ieee80211_raw_frame_sanity_check(int32_t arg1, int32_t arg2, int32_t arg3) {
+        return 0; // 0 = Paquete Legítimo. El firewall aprueba el envío.
+    }
+}
 
 // Variables Globales de Calibración
 bool joyEjeY_esVertical = true;
@@ -30,7 +40,6 @@ AppWiFi       wifiApp;
 AppSettings   settingsApp;
 AppSD         sdApp;
 AppStats      statsApp;
-AppSnake      snakeApp;
 AppInfo       infoApp;
 AppBLE        bleApp;     
 AppSpamBLE    spamAppBLE; 
@@ -38,10 +47,11 @@ AppSpamWifi   spamAppWifi;
 AppEvilTwin   evilTwinApp; 
 AppSniffer    snifferApp;
 AppDucky      duckyApp;
+AppArcade     arcadeApp;
 
 
 // Catálogo maestro
-App* catalogoApps[] = {&snakeApp, &bleApp, &spamAppWifi,&snifferApp, &evilTwinApp, &wifiApp,&spamAppBLE, &duckyApp, &sdApp, &settingsApp, &statsApp, &infoApp }; 
+App* catalogoApps[] = {&arcadeApp, &bleApp, &spamAppWifi,&snifferApp, &evilTwinApp, &wifiApp,&spamAppBLE, &duckyApp, &sdApp, &settingsApp, &statsApp, &infoApp }; 
 int totalApps = 12;
 int indiceActual = 0;
 App* appActiva = nullptr;
