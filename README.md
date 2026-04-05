@@ -71,28 +71,29 @@ Este proyecto está desarrollado bajo **PlatformIO**. Para desplegarlo:
    ```ini
    
    [env:esp32-s3-ironos]
-   platform = espressif32@5.3.0
-   board = esp32-s3-devkitc-1
-   framework = arduino
-   monitor_speed = 115200
-   monitor_filters = esp32_exception_decoder
-   
-   ; --- CONFIGURACIÓN N16R8: 16MB Flash QIO + 8MB PSRAM OPI ---
-   board_build.arduino.memory_type = qio_opi
-   board_build.flash_mode = qio
-   board_build.flash_size = 16MB
-   board_build.partitions = default_16MB.csv
-   board_upload.flash_size = 16MB
-   board_upload.maximum_size = 16777216
-   
-   lib_deps = 
-       moononournation/GFX Library for Arduino @ 1.4.7
-   
-   build_flags = 
-       -DBOARD_HAS_PSRAM
-       -DARDUINO_USB_MODE=1
-       -DARDUINO_USB_CDC_ON_BOOT=1
-       -DCORE_DEBUG_LEVEL=0
+    platform = espressif32@5.3.0
+    board = esp32-s3-devkitc-1
+    framework = arduino
+    monitor_speed = 115200
+    monitor_filters = esp32_exception_decoder
+
+    ; --- CONFIGURACIÓN N16R8: 16MB Flash QIO + 8MB PSRAM OPI ---
+    board_build.arduino.memory_type = qio_opi
+    board_build.flash_mode = qio
+    board_build.flash_size = 16MB
+    board_build.partitions = default_16MB.csv
+    board_upload.flash_size = 16MB
+    board_upload.maximum_size = 16777216
+
+    lib_deps = 
+        moononournation/GFX Library for Arduino @ 1.4.7
+
+    build_flags = 
+        -DBOARD_HAS_PSRAM
+        -DARDUINO_USB_MODE=1
+        -DARDUINO_USB_CDC_ON_BOOT=1
+        -DCORE_DEBUG_LEVEL=0
+        -Wl,-zmuldefs 
 
 
 # ⚡ IronOS v2.0 - Cyberpunk Edition & Tactical Suite
@@ -167,3 +168,21 @@ Esta actualización masiva se enfoca en la estabilidad del núcleo, la evasión 
 ### 🎨 Interfaz de Usuario (UI/UX)
 * **Identidad Visual "Red Táctico":** Todas las listas de selección en todas las aplicaciones ahora utilizan un esquema de color de alto contraste en Rojo Puro (`IRON_RED`) y Blanco.
 * **Salida Unificada:** Se integró el ícono de retroceso gráfico (`emoji_back`) junto con la instrucción de hardware `<- SALIR (DOBLE CLIC)` en la base de todos los menús raíz.
+
+## ⚡ Actualización v3.0 (Orbital Strike & Arcade Hub)
+
+Esta actualización marca un hito en la arquitectura interna de **IronOS**. Hemos reescrito el motor gráfico, implementado un sistema de submenús modulares y, lo más importante, hemos neutralizado el firewall de hardware de Espressif directamente desde las entrañas del compilador.
+
+### 🛡️ Evasión de Firewall Nativa (Linker Override)
+* **Bypass de Frame 0xC0 (Deauth Puro):** Se eliminó por completo la dependencia de scripts de Python, repositorios caídos y archivos binarios (`.a`) de terceros para parchear la inyección Wi-Fi.
+* **Inyección de Función Fantasma:** Utilizando la instrucción del enlazador `-Wl,-zmuldefs` en PlatformIO, inyectamos una función `ieee80211_raw_frame_sanity_check` falsa en el código fuente. Esto secuestra la verificación estricta de Espressif en tiempo de compilación, engañando al procesador y permitiendo la inyección de paquetes de Deautenticación crudos sin disparar el error `E (17770) wifi:unsupport frame type: 0c0`. El silicio Wi-Fi del ESP32-S3 está ahora 100% liberado.
+
+### 🕹️ Arcade Hub (Motor Modular de Sub-Aplicaciones)
+* **Gestor de Carpetas:** Se implementó `AppArcade`, un contenedor virtual que demuestra la capacidad de IronOS para ejecutar sub-aplicaciones, cederles el control del hardware y recuperarlo sin pérdidas de memoria (Memory Leaks).
+* **GALAXY WAR:** Nuevo minijuego integrado de naves espaciales. Cuenta con un fondo parallax de estrellas, físicas de colisión, aumento dinámico de dificultad por niveles, anillos de neón reactivos y un sistema de disparo automático adaptativo.
+* **RETRO SNAKE:** El clásico juego de la serpiente ha sido refactorizado, optimizado y encapsulado dentro del Arcade Hub con HUD mejorado y sistema de revancha rápida.
+
+### 🎨 Interfaz Táctica Rediseñada (UI/UX)
+* **Pixel Art "Marauder" 1-Bit:** Los 12 íconos del sistema fueron rediseñados a 32x32 píxeles con una estética de ingeniería de hardware y ciberguerra (Antenas dipolo, microprocesadores LX7 con bus de datos, radar octagonal, portal hexagonal con glitch de interferencia).
+* **Renderizado CRT & Crosshairs:** El Launcher principal ahora dibuja *scanlines* horizontales para simular un monitor táctico analógico, envuelto en anillos concéntricos con marcas de mira topográfica.
+* **Color Dinámico de Sistema:** La interfaz del reloj y los anillos de neón ahora reaccionan dinámicamente, adoptando la paleta de color (RGB565) específica de la aplicación que se esté seleccionando en tiempo real.
