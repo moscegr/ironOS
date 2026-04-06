@@ -245,7 +245,7 @@ public:
                 canvas->drawBitmap(120 - 45, 200, emoji_back, 32, 32, IRON_CYAN);
                 canvas->setCursor(120 - 25, 212);
                 canvas->setTextColor(IRON_RED);
-                canvas->print("DOBLE CLICK");
+                canvas->print("MANTENER CLICK");
                 
                 canvas->flush();
                 pantallaActualizada = true;
@@ -301,7 +301,7 @@ public:
                 canvas->drawBitmap(120 - 45, 200, emoji_back, 32, 32, IRON_CYAN);
                 canvas->setCursor(120 - 25, 212);
                 canvas->setTextColor(IRON_RED);
-                canvas->print("DOBLE CLICK");
+                canvas->print("MANTENER CLICK");
 
                 canvas->flush();
                 pantallaActualizada = true;

@@ -225,7 +225,7 @@ public:
                 canvas->setTextSize(1);
                 canvas->setCursor(120 - 25, 212);
                 canvas->setTextColor(IRON_RED);
-                canvas->print("DOBLE CLICK");
+                canvas->print("MANTENER CLICK");
                 canvas->flush();
                 pantallaActualizada = true;
             }
@@ -285,7 +285,7 @@ public:
                 canvas->setTextSize(1);
                 canvas->setCursor(120 - 25, 212);
                 canvas->setTextColor(IRON_RED);
-                canvas->print("DOBLE CLICK");
+                canvas->print("MANTENER CLICK");
                 canvas->flush();
                 pantallaActualizada = true;
             }

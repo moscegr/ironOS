@@ -5,12 +5,12 @@
 // --- PINES DE PANTALLA ---
 #define TFT_SCLK 7
 #define TFT_MOSI 6
-#define TFT_CS   1
+#define TFT_CS   1 //cambio de 1 a 13 se puede probar
 #define TFT_DC   4
 #define TFT_RST  5
 
 // --- PINES DE JOYSTICK ---
-#define JOY_X  2
+#define JOY_X  2 ///cambio de 2 a 14, se puede probar
 #define JOY_Y  3
 #define JOY_SW 8
 
@@ -20,7 +20,11 @@
 #define SD_MMC_CLK 39
 #define SD_MMC_D0  40
 
-#define TIEMPO_DOBLE_CLICK 350 
+// Cambia esto:
+// #define TIEMPO_DOBLE_CLICK 350 
+
+// Por esto (800 milisegundos es el tiempo ideal para evitar salidas accidentales):
+#define TIEMPO_PRESION_LARGA 800
 
 // ============================================================
 //  MARAUDER OS — Paleta de color dinámica por app
@@ -41,9 +45,10 @@
 #define IRON_DARK 0xD6BA
 #define IRON_GREEN 0x07E0
 
-// --- MOTOR DE CALIBRACIÓN DE JOYSTICK ---
+// --- MOTOR DE CALIBRACIÓN DE JOYSTICK Y PANTALLA ---
 extern bool joyEjeY_esVertical;
 extern bool joyInvVertical;
 extern bool joyInvHorizontal;
+extern int rotacionPantalla; // NUEVO: Variable global de rotación
 
 #endif
